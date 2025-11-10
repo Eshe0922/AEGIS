@@ -1,0 +1,49 @@
+# part of the code is from: https://github.com/bytedance/trae-agent
+
+import os
+import argparse
+from pathlib import Path
+
+self_path = os.path.dirname(__file__).strip()
+max_lines = 100
+
+parser = argparse.ArgumentParser(prog='review_file', add_help=False)
+parser.add_argument('-f', '--file_path', required=True, help='file path', type=str)
+parser.add_argument('-s', '--start_lineno', required=True, help='start lineno', type=int)
+parser.add_argument('-e', '--end_lineno', required=True, help='end lineno', type=int)
+parser.add_argument('-l', '--line_limit', action='store_false', help='line limit', default=True)
+args = parser.parse_args()
+
+def get_code_snippet(file_path, start_line, end_line):
+    if not os.path.exists(file_path):
+        print(f"File does not exist: {file_path}")
+        return None
+    with open(file_path, 'r', encoding='utf-8') as f:
+        code = f.read()
+
+    lines = code.split('\n')
+    if start_line < 0:
+        start_line = 1
+    if end_line >= len(lines):
+        end_line = len(lines)
+
+    snippet_lines = [f"【{i + start_line + 1}】{line}" for i, line in enumerate(lines[start_line:end_line + 1])]
+    return '\n'.join(snippet_lines)
+
+def review_online(file_path, start_lineno, end_lineno):
+    if not os.path.exists(file_path):
+        print(f"The file {file_path} does not exist, please enter the full file path correctly.")
+    else:
+        if start_lineno < 1:
+            start_lineno = 1
+        if args.line_limit:
+            if end_lineno - start_lineno > max_lines:
+                end_lineno = start_lineno + max_lines
+
+        code = get_code_snippet(file_path, start_lineno - 1, end_lineno - 1)
+        response_message = f"The code snippet between {start_lineno}~{end_lineno} of {file_path} is following:\n{code}\n"
+
+        response_message = response_message.replace("\t", "    ")
+        print(response_message)
+
+review_online(args.file_path, args.start_lineno, args.end_lineno)

@@ -1,0 +1,42 @@
+# part of the code is from: https://github.com/bytedance/trae-agent
+
+import sys
+import os
+import argparse
+
+self_path = os.path.dirname(__file__).strip()
+os.environ['PATH'] += f":{self_path}"
+
+try:
+    flag_index = sys.argv.index('-i') if '-i' in sys.argv else sys.argv.index('--identifier')
+except ValueError:
+    print("Error: Identifier flag '-i' or '--identifier' is required.")
+    sys.exit(1)
+
+identifier = sys.argv[flag_index + 1]
+parser = argparse.ArgumentParser(prog='find_identifier', add_help=False)
+parser.add_argument('-i', '--identifier', required=True, help='Identifier name to be searched', type=str)
+parser.add_argument('-f', '--file_path', required=True, help='File Path', type=str)
+args = parser.parse_args()
+
+def find_lines_with_text(file, identifier):
+    if not os.path.exists(file):
+        print(f"The file {file} does not exist. Please enter the complete absolute file path correctly and ensure the file exists.")
+        return
+
+    if os.path.isdir(file):
+        print(f"The path {file} is a directory. Please provide a file path.")
+        return
+
+    with open(file, 'r', encoding='utf-8') as f:
+        data = f.readlines()
+
+    result = []
+    for index, line in enumerate(data):
+        if identifier in line:
+            result.append(f"【{index + 1}】{line.strip()}")
+
+    for line in result:
+        print(line)
+
+find_lines_with_text(args.file_path, identifier)

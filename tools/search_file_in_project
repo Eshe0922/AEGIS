@@ -1,0 +1,31 @@
+# part of the code is from: https://github.com/bytedance/trae-agent
+
+import os
+import argparse
+
+def find_files(directory, filename):
+    matches = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if filename in file:
+                matches.append(os.path.join(root, file))
+    return matches
+
+def main():
+    parser = argparse.ArgumentParser(description="Recursively search for files in a specified directory")
+    parser.add_argument("-p", "--project", type=str, required=True, help="The directory to search in")
+    parser.add_argument("-f", "--filename", type=str, required=True, help="The filename to search for")
+    
+    args = parser.parse_args()
+    
+    results = find_files(args.project, args.filename)
+    
+    if results:
+        print("Found files:")
+        for result in results:
+            print(result)
+    else:
+        print("No files found.")
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 Xinchen Wang 王欣辰
+
+import subprocess
+import argparse
+
+def git_restore(project_path):
+    """
+    Executes 'git restore .' command on the specified project path.
+    """
+    reset_command = f"cd {project_path} && git restore ."
+    try:
+        reset_result = subprocess.run(reset_command, shell=True, check=True, text=True, capture_output=True)
+        print("Reset successful.", reset_result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("An error occurred while trying to reset:", e.stderr)
+
+def main():
+    parser = argparse.ArgumentParser(description="Restore all modifications in a git repository to original state")
+    parser.add_argument("-p", "--project_path", type=str, required=True, help="Path to the root directory of the git project")
+    
+    args = parser.parse_args()
+    git_restore(args.project_path)
+
+if __name__ == "__main__":
+    main()
