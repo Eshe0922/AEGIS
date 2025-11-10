@@ -1,7 +1,7 @@
 # AEGIS
 
 <p align="center">
-  <img width="500" alt="AEGIS" src="logo.png" />
+  <img width="800" alt="AEGIS" src="logo.png" />
 </p>
 
 <p align="center">
@@ -40,6 +40,9 @@ python3 main.py \
     --output_path "./experiments/output" \
     --namespace "PyAirbyte"
 ```
+
+Please note that our "Bug-related context summarization" module contains proprietary code and is not available for full open-sourcing.
+However, the core logic can be effectively replicated using the publicly available [Trae Agent](https://github.com/bytedance/trae-agent). We recommend adapting this as a suitable replacement for this module.
 
 ## Project Structure
 
